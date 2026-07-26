@@ -1,0 +1,1580 @@
+/* =====================================================
+   PROFESSIONAL TO-DO DASHBOARD
+   STYLE.CSS
+=====================================================*/
+
+/* -------------------------------
+   RESET
+--------------------------------*/
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+html{
+    scroll-behavior:smooth;
+}
+
+body{
+
+    font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;
+
+    background:#edf2f7;
+
+    color:#333;
+
+    overflow-x:hidden;
+
+    transition:.4s;
+
+}
+
+
+/* -------------------------------
+   CONTAINER
+--------------------------------*/
+
+.container-fluid{
+
+    padding:20px;
+
+}
+
+
+/* -------------------------------
+   HEADER
+--------------------------------*/
+
+header{
+
+    margin-bottom:20px;
+
+}
+
+h1,h2,h3,h4,h5{
+
+    font-weight:600;
+
+}
+
+.text-white{
+
+    color:white!important;
+
+}
+
+
+/* -------------------------------
+   CARDS
+--------------------------------*/
+
+.card{
+
+    border:none;
+
+    border-radius:15px;
+
+    overflow:hidden;
+
+    transition:.3s;
+
+    box-shadow:0 5px 20px rgba(0,0,0,.12);
+
+    background:white;
+
+}
+
+.card:hover{
+
+    transform:translateY(-5px);
+
+    box-shadow:0 10px 30px rgba(0,0,0,.20);
+
+}
+
+.card-header{
+
+    font-size:18px;
+
+    font-weight:bold;
+
+}
+
+.card-body{
+
+    padding:20px;
+
+}
+
+
+/* -------------------------------
+   STATISTICS
+--------------------------------*/
+
+.card h2{
+
+    font-size:35px;
+
+    font-weight:bold;
+
+}
+
+.card h5{
+
+    font-size:17px;
+
+}
+
+.bg-primary{
+
+    background:#0d6efd!important;
+
+}
+
+.bg-success{
+
+    background:#198754!important;
+
+}
+
+.bg-danger{
+
+    background:#dc3545!important;
+
+}
+
+.bg-warning{
+
+    background:#ffc107!important;
+
+}
+
+.bg-info{
+
+    background:#0dcaf0!important;
+
+}
+
+.bg-secondary{
+
+    background:#6c757d!important;
+
+}
+
+
+/* -------------------------------
+   BUTTONS
+--------------------------------*/
+
+.btn{
+
+    border-radius:10px;
+
+    transition:.3s;
+
+}
+
+.btn:hover{
+
+    transform:scale(1.05);
+
+}
+
+.btn-success{
+
+    background:#28a745;
+
+}
+
+.btn-danger{
+
+    background:#dc3545;
+
+}
+
+.btn-primary{
+
+    background:#0d6efd;
+
+}
+
+.btn-warning{
+
+    background:#ffc107;
+
+}
+
+.btn-info{
+
+    background:#17a2b8;
+
+}
+
+.btn-dark{
+
+    background:#343a40;
+
+}
+
+
+/* -------------------------------
+   INPUTS
+--------------------------------*/
+
+input,
+
+textarea,
+
+select{
+
+    border-radius:10px!important;
+
+    border:1px solid #ced4da!important;
+
+    padding:12px!important;
+
+    transition:.3s;
+
+}
+
+input:focus,
+
+textarea:focus,
+
+select:focus{
+
+    border-color:#0d6efd!important;
+
+    box-shadow:0 0 10px rgba(13,110,253,.25)!important;
+
+}
+
+textarea{
+
+    resize:none;
+
+}
+
+
+/* -------------------------------
+   TASK LIST
+--------------------------------*/
+
+#todo-list{
+
+    max-height:700px;
+
+    overflow-y:auto;
+
+}
+
+.task-card{
+
+    border-left:8px solid #0d6efd;
+
+    padding:15px;
+
+    margin-bottom:15px;
+
+    border-radius:12px;
+
+    background:#f8f9fa;
+
+    transition:.3s;
+
+}
+
+.task-card:hover{
+
+    background:white;
+
+    transform:translateX(6px);
+
+}
+
+.task-title{
+
+    font-size:20px;
+
+    font-weight:bold;
+
+}
+
+.task-desc{
+
+    color:#666;
+
+    margin-top:8px;
+
+}
+
+.task-date{
+
+    font-size:14px;
+
+    color:#777;
+
+}
+
+
+/* -------------------------------
+   PRIORITY COLORS
+--------------------------------*/
+
+.high{
+
+    border-left:8px solid #dc3545;
+
+}
+
+.medium{
+
+    border-left:8px solid #ffc107;
+
+}
+
+.low{
+
+    border-left:8px solid #198754;
+
+}
+
+
+/* -------------------------------
+   STATUS BADGES
+--------------------------------*/
+
+.badge{
+
+    padding:8px 14px;
+
+    border-radius:30px;
+
+    font-size:13px;
+
+}
+
+.badge-success{
+
+    background:#198754;
+
+    color:white;
+
+}
+
+.badge-danger{
+
+    background:#dc3545;
+
+    color:white;
+
+}
+
+.badge-warning{
+
+    background:#ffc107;
+
+    color:black;
+
+}
+
+
+/* -------------------------------
+   PROGRESS BAR
+--------------------------------*/
+
+.progress{
+
+    height:30px;
+
+    border-radius:30px;
+
+    background:#ddd;
+
+}
+
+.progress-bar{
+
+    font-size:16px;
+
+    font-weight:bold;
+
+    transition:width .5s;
+
+}
+
+
+/* -------------------------------
+   SEARCH BAR
+--------------------------------*/
+
+#searchTask{
+
+    font-size:17px;
+
+}
+
+
+/* -------------------------------
+   FILTERS
+--------------------------------*/
+
+#filterPriority,
+
+#filterStatus{
+
+    font-weight:600;
+
+}
+
+
+/* -------------------------------
+   ICONS
+--------------------------------*/
+
+i{
+
+    margin-right:5px;
+
+}
+
+
+/* -------------------------------
+   SCROLLBAR
+--------------------------------*/
+
+::-webkit-scrollbar{
+
+    width:10px;
+
+}
+
+::-webkit-scrollbar-thumb{
+
+    background:#0d6efd;
+
+    border-radius:20px;
+
+}
+
+::-webkit-scrollbar-track{
+
+    background:#ddd;
+
+}
+
+/* =====================================================
+   PART 2
+   CALENDAR • TABLES • CHARTS • EXPORT • REMINDERS
+=====================================================*/
+
+
+/* -------------------------------
+   CALENDAR
+--------------------------------*/
+
+#calendar{
+
+    background:white;
+
+    border-radius:15px;
+
+    padding:15px;
+
+    min-height:700px;
+
+}
+
+.fc{
+
+    font-size:15px;
+
+}
+
+.fc-toolbar-title{
+
+    font-size:24px !important;
+
+    font-weight:bold;
+
+}
+
+.fc-button{
+
+    background:#0d6efd !important;
+
+    border:none !important;
+
+    border-radius:8px !important;
+
+    transition:.3s;
+
+}
+
+.fc-button:hover{
+
+    background:#0b5ed7 !important;
+
+}
+
+.fc-daygrid-day{
+
+    transition:.3s;
+
+}
+
+.fc-daygrid-day:hover{
+
+    background:#edf6ff;
+
+    cursor:pointer;
+
+}
+
+.fc-day-today{
+
+    background:#dbeafe !important;
+
+}
+
+.fc-event{
+
+    border:none;
+
+    border-radius:6px;
+
+    padding:3px;
+
+    font-size:13px;
+
+    cursor:pointer;
+
+}
+
+.fc-event-title{
+
+    font-weight:600;
+
+}
+
+
+/* -------------------------------
+   SUMMARY TABLE
+--------------------------------*/
+
+.table{
+
+    margin-bottom:0;
+
+}
+
+.table-responsive{
+
+    overflow-x:auto;
+
+}
+
+.table thead{
+
+    position:sticky;
+
+    top:0;
+
+    z-index:10;
+
+}
+
+.table thead th{
+
+    text-align:center;
+
+    vertical-align:middle;
+
+    white-space:nowrap;
+
+}
+
+.table td{
+
+    vertical-align:middle;
+
+}
+
+.table-hover tbody tr:hover{
+
+    background:#eef6ff;
+
+    transition:.25s;
+
+}
+
+.table-striped tbody tr:nth-child(even){
+
+    background:#fafafa;
+
+}
+
+.table td button{
+
+    margin:2px;
+
+}
+
+#summary-table th{
+
+    background:#212529;
+
+    color:white;
+
+}
+
+
+/* -------------------------------
+   STATUS COLORS
+--------------------------------*/
+
+.status-pending{
+
+    color:#ffc107;
+
+    font-weight:bold;
+
+}
+
+.status-completed{
+
+    color:#198754;
+
+    font-weight:bold;
+
+}
+
+.status-overdue{
+
+    color:#dc3545;
+
+    font-weight:bold;
+
+}
+
+.status-today{
+
+    color:#0d6efd;
+
+    font-weight:bold;
+
+}
+
+
+/* -------------------------------
+   CHARTS
+--------------------------------*/
+
+canvas{
+
+    max-width:100%;
+
+}
+
+.chart-container{
+
+    width:100%;
+
+    height:350px;
+
+    position:relative;
+
+}
+
+
+/* -------------------------------
+   EXPORT PANEL
+--------------------------------*/
+
+.export-buttons{
+
+    display:flex;
+
+    justify-content:center;
+
+    gap:15px;
+
+    flex-wrap:wrap;
+
+}
+
+.export-buttons .btn{
+
+    min-width:180px;
+
+}
+
+
+/* -------------------------------
+   REMINDER PANEL
+--------------------------------*/
+
+#reminderList{
+
+    max-height:260px;
+
+    overflow-y:auto;
+
+}
+
+#reminderList .list-group-item{
+
+    border-left:5px solid #dc3545;
+
+    margin-bottom:8px;
+
+    border-radius:8px;
+
+    transition:.3s;
+
+}
+
+#reminderList .list-group-item:hover{
+
+    transform:translateX(5px);
+
+    background:#fff5f5;
+
+}
+
+
+/* -------------------------------
+   ACTIVITY LOG
+--------------------------------*/
+
+#activityLog{
+
+    background:#f8f9fa;
+
+    border-radius:10px;
+
+    padding:10px;
+
+}
+
+#logList{
+
+    list-style:none;
+
+    padding-left:0;
+
+}
+
+#logList li{
+
+    padding:10px;
+
+    margin-bottom:8px;
+
+    border-radius:8px;
+
+    background:white;
+
+    border-left:4px solid #0d6efd;
+
+    transition:.3s;
+
+}
+
+#logList li:hover{
+
+    transform:translateX(5px);
+
+}
+
+
+/* -------------------------------
+   SCROLL TO TOP BUTTON
+--------------------------------*/
+
+#scrollTopBtn{
+
+    box-shadow:0 6px 20px rgba(0,0,0,.25);
+
+    transition:.3s;
+
+}
+
+#scrollTopBtn:hover{
+
+    transform:scale(1.1);
+
+}
+
+
+/* -------------------------------
+   LOADING SCREEN
+--------------------------------*/
+
+#loading{
+
+    backdrop-filter:blur(4px);
+
+}
+
+.spinner-border{
+
+    width:70px;
+
+    height:70px;
+
+}
+
+
+/* -------------------------------
+   TOAST
+--------------------------------*/
+
+.toast{
+
+    border-radius:12px;
+
+    box-shadow:0 10px 25px rgba(0,0,0,.25);
+
+}
+
+
+/* -------------------------------
+   MODAL
+--------------------------------*/
+
+.modal-content{
+
+    border:none;
+
+    border-radius:15px;
+
+}
+
+.modal-header{
+
+    border-bottom:none;
+
+}
+
+.modal-footer{
+
+    border-top:none;
+
+}
+
+
+/* -------------------------------
+   ANIMATIONS
+--------------------------------*/
+
+.fade-in{
+
+    animation:fadeIn .6s ease;
+
+}
+
+.slide-up{
+
+    animation:slideUp .5s ease;
+
+}
+
+.zoom{
+
+    animation:zoomIn .4s ease;
+
+}
+
+@keyframes fadeIn{
+
+    from{
+
+        opacity:0;
+
+    }
+
+    to{
+
+        opacity:1;
+
+    }
+
+}
+
+@keyframes slideUp{
+
+    from{
+
+        transform:translateY(30px);
+
+        opacity:0;
+
+    }
+
+    to{
+
+        transform:translateY(0);
+
+        opacity:1;
+
+    }
+
+}
+
+@keyframes zoomIn{
+
+    from{
+
+        transform:scale(.8);
+
+        opacity:0;
+
+    }
+
+    to{
+
+        transform:scale(1);
+
+        opacity:1;
+
+    }
+
+}
+
+
+/* -------------------------------
+   FOOTER
+--------------------------------*/
+
+footer{
+
+    border-top:4px solid #0d6efd;
+
+}
+
+footer h5{
+
+    margin-bottom:10px;
+
+}
+
+footer p{
+
+    margin-bottom:5px;
+
+}
+
+/* =====================================================
+   PART 3
+   DARK MODE • RESPONSIVE DESIGN • GLASS EFFECTS
+=====================================================*/
+
+
+/* ------------------------------------
+   DARK MODE
+-------------------------------------*/
+
+body.dark-mode{
+
+    background:#121212;
+
+    color:#f5f5f5;
+
+    transition:.4s;
+
+}
+
+body.dark-mode .card{
+
+    background:#1f1f1f;
+
+    color:white;
+
+    box-shadow:0 5px 20px rgba(255,255,255,.05);
+
+}
+
+body.dark-mode .card-header{
+
+    border-bottom:1px solid rgba(255,255,255,.1);
+
+}
+
+body.dark-mode input,
+
+body.dark-mode textarea,
+
+body.dark-mode select{
+
+    background:#2d2d2d;
+
+    color:white;
+
+    border:1px solid #555!important;
+
+}
+
+body.dark-mode input::placeholder,
+
+body.dark-mode textarea::placeholder{
+
+    color:#bbbbbb;
+
+}
+
+body.dark-mode .table{
+
+    color:white;
+
+}
+
+body.dark-mode .table-striped tbody tr:nth-child(even){
+
+    background:#252525;
+
+}
+
+body.dark-mode .table-hover tbody tr:hover{
+
+    background:#313131;
+
+}
+
+body.dark-mode footer{
+
+    background:#181818!important;
+
+}
+
+body.dark-mode #calendar{
+
+    background:#202020;
+
+}
+
+body.dark-mode .fc-theme-standard td,
+
+body.dark-mode .fc-theme-standard th{
+
+    border-color:#444;
+
+}
+
+body.dark-mode .fc-daygrid-day{
+
+    background:#1d1d1d;
+
+}
+
+body.dark-mode .fc-daygrid-day:hover{
+
+    background:#2b2b2b;
+
+}
+
+body.dark-mode .progress{
+
+    background:#555;
+
+}
+
+
+/* ------------------------------------
+   GLASS EFFECT
+-------------------------------------*/
+
+.glass{
+
+    background:rgba(255,255,255,.25);
+
+    backdrop-filter:blur(15px);
+
+    border-radius:20px;
+
+    border:1px solid rgba(255,255,255,.2);
+
+}
+
+body.dark-mode .glass{
+
+    background:rgba(30,30,30,.45);
+
+}
+
+
+/* ------------------------------------
+   CARD ANIMATION
+-------------------------------------*/
+
+.card{
+
+    animation:cardFade .5s ease;
+
+}
+
+@keyframes cardFade{
+
+    from{
+
+        opacity:0;
+
+        transform:translateY(25px);
+
+    }
+
+    to{
+
+        opacity:1;
+
+        transform:translateY(0);
+
+    }
+
+}
+
+
+/* ------------------------------------
+   BUTTON EFFECTS
+-------------------------------------*/
+
+.btn{
+
+    transition:.25s;
+
+}
+
+.btn:hover{
+
+    transform:translateY(-2px);
+
+    box-shadow:0 5px 15px rgba(0,0,0,.25);
+
+}
+
+.btn:active{
+
+    transform:scale(.95);
+
+}
+
+
+/* ------------------------------------
+   STATISTICS CARDS
+-------------------------------------*/
+
+.stats-card{
+
+    transition:.3s;
+
+}
+
+.stats-card:hover{
+
+    transform:translateY(-8px);
+
+}
+
+.stats-card h2{
+
+    font-size:38px;
+
+}
+
+.stats-card i{
+
+    font-size:35px;
+
+    margin-bottom:15px;
+
+}
+
+
+/* ------------------------------------
+   PROGRESS BAR
+-------------------------------------*/
+
+.progress{
+
+    overflow:hidden;
+
+}
+
+.progress-bar{
+
+    animation:progressAnimation 2s ease;
+
+}
+
+@keyframes progressAnimation{
+
+    from{
+
+        width:0;
+
+    }
+
+}
+
+
+/* ------------------------------------
+   TASK CARD
+-------------------------------------*/
+
+.task-card{
+
+    position:relative;
+
+}
+
+.task-card::before{
+
+    content:"";
+
+    position:absolute;
+
+    left:0;
+
+    top:0;
+
+    width:6px;
+
+    height:100%;
+
+    background:#0d6efd;
+
+    border-radius:20px;
+
+}
+
+.task-card:hover{
+
+    box-shadow:0 8px 20px rgba(0,0,0,.15);
+
+}
+
+
+/* ------------------------------------
+   PRIORITY LABELS
+-------------------------------------*/
+
+.priority-high{
+
+    color:white;
+
+    background:#dc3545;
+
+    padding:4px 12px;
+
+    border-radius:20px;
+
+}
+
+.priority-medium{
+
+    color:black;
+
+    background:#ffc107;
+
+    padding:4px 12px;
+
+    border-radius:20px;
+
+}
+
+.priority-low{
+
+    color:white;
+
+    background:#198754;
+
+    padding:4px 12px;
+
+    border-radius:20px;
+
+}
+
+
+/* ------------------------------------
+   RESPONSIVE
+-------------------------------------*/
+
+@media(max-width:1400px){
+
+.stats-card h2{
+
+font-size:30px;
+
+}
+
+}
+
+@media(max-width:1200px){
+
+.card-body{
+
+padding:15px;
+
+}
+
+#calendar{
+
+min-height:600px;
+
+}
+
+}
+
+@media(max-width:992px){
+
+#calendar{
+
+min-height:500px;
+
+margin-top:20px;
+
+}
+
+.table{
+
+font-size:14px;
+
+}
+
+.stats-card{
+
+margin-bottom:20px;
+
+}
+
+}
+
+@media(max-width:768px){
+
+.container-fluid{
+
+padding:10px;
+
+}
+
+.card{
+
+margin-bottom:20px;
+
+}
+
+.card h2{
+
+font-size:28px;
+
+}
+
+.btn{
+
+width:100%;
+
+margin-top:5px;
+
+}
+
+.export-buttons{
+
+flex-direction:column;
+
+}
+
+#scrollTopBtn{
+
+width:50px;
+
+height:50px;
+
+}
+
+}
+
+@media(max-width:576px){
+
+.table{
+
+font-size:12px;
+
+}
+
+.card-body{
+
+padding:10px;
+
+}
+
+.card-header{
+
+font-size:16px;
+
+}
+
+h2{
+
+font-size:22px;
+
+}
+
+.progress{
+
+height:22px;
+
+}
+
+}
+
+
+/* ------------------------------------
+   FLOATING EFFECT
+-------------------------------------*/
+
+.float{
+
+animation:floating 3s infinite;
+
+}
+
+@keyframes floating{
+
+0%{
+
+transform:translateY(0);
+
+}
+
+50%{
+
+transform:translateY(-8px);
+
+}
+
+100%{
+
+transform:translateY(0);
+
+}
+
+}
+
+
+/* ------------------------------------
+   PULSE EFFECT
+-------------------------------------*/
+
+.pulse{
+
+animation:pulse 2s infinite;
+
+}
+
+@keyframes pulse{
+
+0%{
+
+transform:scale(1);
+
+}
+
+50%{
+
+transform:scale(1.05);
+
+}
+
+100%{
+
+transform:scale(1);
+
+}
+
+}
+
+
+/* ------------------------------------
+   FADE UTILITIES
+-------------------------------------*/
+
+.fade-fast{
+
+animation:fadeFast .3s;
+
+}
+
+@keyframes fadeFast{
+
+from{
+
+opacity:0;
+
+}
+
+to{
+
+opacity:1;
+
+}
+
+}
+
+
+/* ------------------------------------
+   CUSTOM SELECTION
+-------------------------------------*/
+
+::selection{
+
+background:#0d6efd;
+
+color:white;
+
+}
+
+
+/* ------------------------------------
+   PRINT SUPPORT
+-------------------------------------*/
+
+@media print{
+
+#calendar,
+
+#searchTask,
+
+#filterPriority,
+
+#filterStatus,
+
+button,
+
+footer{
+
+display:none!important;
+
+}
+
+.card{
+
+box-shadow:none;
+
+border:1px solid #ddd;
+
+}
+
+body{
+
+background:white;
+
+}
+
+}
+
+
+/* ------------------------------------
+   END OF FILE
+-------------------------------------*/

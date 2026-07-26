@@ -1,0 +1,1113 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Professional To-Do Dashboard</title>
+
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+    <!-- Full Calendar -->
+    <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.css"
+        rel="stylesheet">
+
+    <!-- Animate CSS -->
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+
+    <!-- Chart JS -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- Sheet JS -->
+    <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
+
+    <!-- jsPDF -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
+
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+    <link rel="stylesheet" href="style.css">
+	
+<!-- SheetJS -->
+<script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
+
+<!-- jsPDF -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+<!-- jsPDF AutoTable -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
+</head>
+
+<body>
+
+<div class="container-fluid">
+
+<!-- ================= HEADER ================= -->
+
+<div class="row bg-primary text-white p-3">
+
+<div class="col-md-8">
+
+<h2>
+
+<i class="fa-solid fa-list-check"></i>
+
+Professional To-Do Dashboard
+
+</h2>
+
+</div>
+
+<div class="col-md-4 text-end">
+
+<button id="darkModeBtn" class="btn btn-light">
+
+<i class="fa-solid fa-moon"></i>
+
+Dark Mode
+
+</button>
+
+</div>
+
+</div>
+
+
+
+<!-- ================= STATISTICS ================= -->
+
+<div class="row mt-3">
+
+<div class="col-md-2">
+
+<div class="card text-center shadow">
+
+<div class="card-body">
+
+<h5>Total</h5>
+
+<h2 id="totalTasks">0</h2>
+
+</div>
+
+</div>
+
+</div>
+
+<div class="col-md-3">
+
+    <div class="card bg-dark text-white shadow">
+
+        <div class="card-body text-center">
+
+            <h5>
+
+                <i class="fa-solid fa-trophy"></i>
+
+                Productivity
+
+            </h5>
+
+            <h2 id="productivityScore">
+
+                0%
+
+            </h2>
+
+        </div>
+
+    </div>
+
+</div>
+
+<div class="col-md-2">
+
+<div class="card text-center bg-warning shadow">
+
+<div class="card-body">
+
+<h5>Pending</h5>
+
+<h2 id="pendingTasks">0</h2>
+
+</div>
+
+</div>
+
+</div>
+
+
+
+<div class="col-md-2">
+
+<div class="card text-center bg-success text-white shadow">
+
+<div class="card-body">
+
+<h5>Completed</h5>
+
+<h2 id="completedTasks">0</h2>
+
+</div>
+
+</div>
+
+</div>
+
+
+
+<div class="col-md-2">
+
+<div class="card text-center bg-danger text-white shadow">
+
+<div class="card-body">
+
+<h5>Overdue</h5>
+
+<h2 id="overdueTasks">0</h2>
+
+</div>
+
+</div>
+
+</div>
+
+
+
+<div class="col-md-2">
+
+<div class="card text-center bg-info shadow">
+
+<div class="card-body">
+
+<h5>High Priority</h5>
+
+<h2 id="highPriority">0</h2>
+
+</div>
+
+</div>
+
+</div>
+
+
+
+<div class="col-md-2">
+
+<div class="card text-center bg-secondary text-white shadow">
+
+<div class="card-body">
+
+<h5>Completion</h5>
+
+<h2 id="completionRate">0%</h2>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+
+
+<!-- ================= PROGRESS BAR ================= -->
+
+<div class="row mt-4">
+
+<div class="col-md-12">
+
+<div class="card shadow">
+
+<div class="card-body">
+
+<h4>
+
+<i class="fa-solid fa-chart-line"></i>
+
+Task Progress
+
+</h4>
+
+<div class="progress" style="height:30px;">
+
+<div id="progressBar"
+
+class="progress-bar progress-bar-striped progress-bar-animated bg-success"
+
+style="width:0%">
+
+0%
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+
+
+<!-- ================= SEARCH ================= -->
+
+<div class="row mt-4">
+
+<div class="col-md-6">
+
+<input
+
+type="text"
+
+id="searchTask"
+
+class="form-control"
+
+placeholder="Search Task...">
+
+</div>
+
+
+
+<div class="col-md-3">
+
+<select
+
+id="filterPriority"
+
+class="form-select">
+
+<option value="All">
+
+All Priorities
+
+</option>
+
+<option>
+
+High
+
+</option>
+
+<option>
+
+Medium
+
+</option>
+
+<option>
+
+Low
+
+</option>
+
+</select>
+
+</div>
+
+
+
+<div class="col-md-3">
+
+<select
+
+id="filterStatus"
+
+class="form-select">
+
+<option>
+
+All Status
+
+</option>
+
+<option>
+
+Pending
+
+</option>
+
+<option>
+
+Completed
+
+</option>
+
+<option>
+
+Overdue
+
+</option>
+
+</select>
+
+</div>
+
+</div>
+
+
+
+<!-- ================= MAIN CONTENT ================= -->
+
+<div class="row mt-4">
+
+<!-- LEFT PANEL -->
+
+<div class="col-lg-4">
+
+<div class="card shadow">
+
+<div class="card-header bg-primary text-white">
+
+<h4>
+
+<i class="fa-solid fa-plus"></i>
+
+Add Task
+
+</h4>
+
+</div>
+
+<div class="card-body">
+
+<input
+
+type="text"
+
+id="todo-input"
+
+class="form-control mb-3"
+
+placeholder="Task Title">
+
+
+
+<textarea
+
+id="todo-desc"
+
+class="form-control mb-3"
+
+rows="4"
+
+placeholder="Description">
+
+</textarea>
+
+
+
+<input
+
+type="date"
+
+id="todo-date"
+
+class="form-control mb-3">
+
+
+
+<select
+
+id="priority"
+
+class="form-select mb-3">
+
+<option>
+
+High
+
+</option>
+
+<option selected>
+
+Medium
+
+</option>
+
+<option>
+
+Low
+
+</option>
+
+</select>
+
+
+
+<select
+
+id="category"
+
+class="form-select mb-3">
+
+<option>
+
+Work
+
+</option>
+
+<option>
+
+Study
+
+</option>
+
+<option>
+
+Personal
+
+</option>
+
+<option>
+
+Shopping
+
+</option>
+
+<option>
+
+Fitness
+
+</option>
+
+</select>
+
+
+
+<button
+
+id="add-task"
+
+class="btn btn-success w-100">
+
+<i class="fa-solid fa-plus"></i>
+
+Add Task
+
+</button>
+
+</div>
+
+</div>
+
+
+
+<div class="card shadow mt-4">
+
+<div class="card-header bg-dark text-white">
+
+<h4>
+
+Task List
+
+</h4>
+
+</div>
+
+<div
+
+class="card-body"
+
+id="todo-list">
+
+</div>
+
+</div>
+
+</div>
+
+<!-- ================= RIGHT PANEL ================= -->
+
+<div class="col-lg-8">
+
+    <!-- Calendar -->
+    <div class="card shadow">
+
+        <div class="card-header bg-success text-white d-flex justify-content-between align-items-center">
+
+            <h4 class="mb-0">
+                <i class="fa-solid fa-calendar-days"></i>
+                Calendar View
+            </h4>
+
+            <div>
+
+                <button class="btn btn-light btn-sm" id="todayBtn">
+                    Today
+                </button>
+
+            </div>
+
+        </div>
+
+        <div class="card-body">
+
+            <div id="calendar"></div>
+
+        </div>
+
+    </div>
+
+
+<!-- Charts -->
+
+<div class="row mt-4">
+
+    <!-- Pie Chart -->
+
+    <div class="col-lg-6">
+
+        <div class="card shadow">
+
+            <div class="card-header bg-success text-white">
+
+                <i class="fa-solid fa-chart-pie"></i>
+
+                Task Distribution
+
+            </div>
+
+            <div class="card-body">
+
+                <canvas id="pieChart"></canvas>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- Bar Chart -->
+
+    <div class="col-lg-6">
+
+        <div class="card shadow">
+
+            <div class="card-header bg-primary text-white">
+
+                <i class="fa-solid fa-chart-column"></i>
+
+                Priority Analysis
+
+            </div>
+
+            <div class="card-body">
+
+                <canvas id="barChart"></canvas>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+    <!-- Export -->
+
+    <div class="card shadow mt-4">
+
+        <div class="card-header bg-dark text-white">
+
+            Export Tasks
+
+        </div>
+
+        <div class="card-body text-center">
+
+            <button
+                class="btn btn-success m-2"
+                id="excelExport">
+
+                <i class="fa-solid fa-file-excel"></i>
+
+                Export Excel
+
+            </button>
+
+
+
+            <button
+                class="btn btn-danger m-2"
+                id="pdfExport">
+
+                <i class="fa-solid fa-file-pdf"></i>
+
+                Export PDF
+
+            </button>
+
+        </div>
+
+    </div>
+
+<div class="d-flex flex-wrap gap-2 mt-3">
+
+    <button class="btn btn-success" onclick="exportExcel()">
+        Export Excel
+    </button>
+
+    <button class="btn btn-danger" onclick="exportPDF()">
+        Export PDF
+    </button>
+
+    <button class="btn btn-primary" onclick="backupJSON()">
+        Backup JSON
+    </button>
+
+    <button class="btn btn-warning" onclick="document.getElementById('importFile').click()">
+        Import
+    </button>
+
+    <input
+        type="file"
+        id="importFile"
+        accept=".json,.xlsx,.xls,.csv"
+        style="display:none"
+    >
+
+</div>
+
+    <!-- Reminder -->
+
+    <div class="card shadow mt-4">
+
+        <div class="card-header bg-danger text-white">
+
+            <i class="fa-solid fa-bell"></i>
+
+            Due Date Reminders
+
+        </div>
+
+        <div class="card-body">
+
+            <ul
+                id="reminderList"
+                class="list-group">
+
+                <li class="list-group-item">
+
+                    No reminders
+
+                </li>
+
+            </ul>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- Summary -->
+
+    <div class="card shadow mt-4">
+
+        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+
+            <h4 class="mb-0">
+
+                Summary Table
+
+            </h4>
+
+            <div>
+
+                <button
+                    class="btn btn-light btn-sm"
+                    id="refreshSummary">
+
+                    Refresh
+
+                </button>
+
+            </div>
+
+        </div>
+
+
+
+        <div class="table-responsive">
+
+            <table
+                id="summary-table"
+                class="table table-bordered table-hover table-striped align-middle">
+
+                <thead class="table-dark">
+
+                    <tr>
+
+                        <th>#</th>
+
+                        <th>Task</th>
+
+                        <th>Description</th>
+
+                        <th>Date</th>
+
+                        <th>Priority</th>
+
+                        <th>Category</th>
+
+                        <th>Status</th>
+
+                        <th>Days Left</th>
+
+                        <th>Actions</th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- Activity Log -->
+
+    <div class="card shadow mt-4">
+
+        <div class="card-header bg-secondary text-white">
+
+            Activity Log
+
+        </div>
+
+        <div class="card-body">
+
+            <div
+                id="activityLog"
+                style="height:220px; overflow-y:auto;">
+
+                <ul
+                    class="list-group"
+                    id="logList">
+
+                </ul>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+
+</div>
+
+</div>
+
+<!-- End Main Row -->
+
+
+
+<!-- Floating Button -->
+
+<button
+    class="btn btn-primary rounded-circle"
+
+    id="scrollTopBtn"
+
+    style="
+        position:fixed;
+        bottom:30px;
+        right:30px;
+        display:none;
+        width:60px;
+        height:60px;
+        z-index:999;
+    ">
+
+    <i class="fa-solid fa-arrow-up"></i>
+
+</button>
+
+<div class="row mt-4">
+
+    <div class="col-lg-6">
+        <div class="card shadow">
+            <div class="card-header bg-primary text-white">
+                Completion Trend
+            </div>
+            <div class="card-body">
+                <canvas id="lineChart"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-6">
+        <div class="card shadow">
+            <div class="card-header bg-danger text-white">
+                Category Distribution
+            </div>
+            <div class="card-body">
+                <canvas id="doughnutChart"></canvas>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<!-- Loading Spinner -->
+
+<div
+    id="loading"
+
+    style="
+        display:none;
+        position:fixed;
+        top:0;
+        left:0;
+        width:100%;
+        height:100%;
+        background:rgba(255,255,255,.8);
+        z-index:9999;
+    ">
+
+    <div
+        class="spinner-border text-primary"
+
+        style="
+            position:absolute;
+            top:50%;
+            left:50%;
+            transform:translate(-50%,-50%);
+        ">
+
+    </div>
+
+</div>
+
+<!-- ================= FOOTER ================= -->
+
+<footer class="bg-dark text-white mt-5 p-3">
+
+    <div class="row">
+
+        <div class="col-md-6">
+
+            <h5>Professional To-Do Dashboard</h5>
+
+            <p>
+                Manage your daily tasks efficiently with Calendar,
+                Statistics, Progress Tracking, Export, Reminders,
+                Dark Mode and much more.
+            </p>
+
+        </div>
+
+        <div class="col-md-6 text-end">
+
+            <h6>Features</h6>
+
+            <p>
+
+                ✔ Progress Tracking
+
+                <br>
+
+                ✔ Calendar View
+
+                <br>
+
+                ✔ Excel Export
+
+                <br>
+
+                ✔ PDF Export
+
+                <br>
+
+                ✔ Dark Mode
+
+            </p>
+
+        </div>
+
+    </div>
+
+    <hr>
+
+    <div class="text-center">
+
+        © 2026 Professional To-Do Dashboard
+
+    </div>
+
+</footer>
+
+
+
+<!-- ================= TOAST NOTIFICATION ================= -->
+
+<div class="toast-container position-fixed bottom-0 end-0 p-3">
+
+<div
+class="toast"
+id="liveToast"
+role="alert">
+
+<div class="toast-header">
+
+<strong class="me-auto">
+
+Notification
+
+</strong>
+
+<button
+type="button"
+class="btn-close"
+data-bs-dismiss="toast">
+
+</button>
+
+</div>
+
+<div class="toast-body"
+
+id="toastMessage">
+
+Task Added Successfully
+
+</div>
+
+</div>
+
+</div>
+
+
+
+<!-- ================= MODAL ================= -->
+
+<div
+class="modal fade"
+
+id="taskModal"
+
+tabindex="-1">
+
+<div class="modal-dialog modal-lg">
+
+<div class="modal-content">
+
+<div class="modal-header bg-primary text-white">
+
+<h5>
+
+Task Details
+
+</h5>
+
+<button
+
+type="button"
+
+class="btn-close"
+
+data-bs-dismiss="modal">
+
+</button>
+
+</div>
+
+<div class="modal-body">
+
+<div id="taskDetails">
+
+</div>
+
+</div>
+
+<div class="modal-footer">
+
+<button
+
+class="btn btn-secondary"
+
+data-bs-dismiss="modal">
+
+Close
+
+</button>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+
+
+<!-- Bootstrap -->
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+<!-- FullCalendar -->
+
+<script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.js"></script>
+
+<!-- Chart.js -->
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<!-- SheetJS -->
+
+<script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
+
+<!-- jsPDF -->
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
+
+
+
+<!-- Your JavaScript Files -->
+
+<script src="script.js"></script>
+
+<script src="calendar.js"></script>
+
+<script src="statistics.js"></script>
+
+<script src="export.js"></script>
+
+<script src="darkmode.js"></script>
+
+<script src="reminder.js"></script>
+
+
+
+</body>
+
+</html>
