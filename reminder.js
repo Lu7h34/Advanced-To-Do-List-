@@ -1,63 +1,36 @@
-
-
 // ===========================================
 // REMINDER PANEL
 // ===========================================
 
-function updateReminderPanel(){
+function updateReminderPanel() {
 
-    const reminder=
+    const reminder = document.getElementById("reminderList");
 
-    document.getElementById(
+    if (!reminder) return;
 
-        "reminderList"
+    reminder.innerHTML = "";
 
-    );
+    const upcoming = getUpcomingTasks();
 
-    if(!reminder) return;
+    if (upcoming.length === 0) {
 
-    reminder.innerHTML="";
-
-    const upcoming=
-
-    getUpcomingTasks();
-
-    if(upcoming.length===0){
-
-        reminder.innerHTML=
-
-        "<li class='list-group-item'>No upcoming tasks</li>";
+        reminder.innerHTML =
+            "<li class='list-group-item'>No upcoming tasks</li>";
 
         return;
 
     }
 
-    upcoming.forEach(task=>{
+    upcoming.forEach(task => {
 
-        const li=
+        const li = document.createElement("li");
 
-        document.createElement("li");
+        li.className = "list-group-item";
 
-        li.className=
-
-        "list-group-item";
-
-        li.innerHTML=`
-
-        <strong>${task.title}</strong>
-
-        <br>
-
-        Due :
-
-        ${task.date}
-
-        <br>
-
-        Priority :
-
-        ${task.priority}
-
+        li.innerHTML = `
+            <strong>${task.title}</strong><br>
+            Due: ${task.date}<br>
+            Priority: ${task.priority}
         `;
 
         reminder.appendChild(li);
@@ -72,45 +45,39 @@ function updateReminderPanel(){
 // CALENDAR SEARCH
 // ===========================================
 
-function searchCalendar(keyword){
+function searchCalendar(keyword) {
 
-    if(!calendar) return;
+    if (!calendar) return;
+
+    // Restore all events if search is empty
+    if (!keyword || keyword.trim() === "") {
+
+        updateCalendar();
+        return;
+
+    }
 
     calendar.removeAllEvents();
 
     todoList
+        .filter(task =>
+            task.title.toLowerCase().includes(keyword.toLowerCase())
+        )
+        .forEach(task => {
 
-    .filter(task=>{
+            calendar.addEvent({
 
-        return task.title
+                id: task.id,
+                title: task.title,
+                start: task.date,
+                allDay: true,
+                backgroundColor: getTaskColor(task),
+                borderColor: getTaskColor(task),
+                textColor: "#ffffff"
 
-        .toLowerCase()
-
-        .includes(
-
-            keyword.toLowerCase()
-
-        );
-
-    })
-
-    .forEach(task=>{
-
-        calendar.addEvent({
-
-            id:task.id,
-
-            title:task.title,
-
-            start:task.date,
-
-            backgroundColor:
-
-            getTaskColor(task)
+            });
 
         });
-
-    });
 
 }
 
@@ -120,7 +87,7 @@ function searchCalendar(keyword){
 // RESTORE CALENDAR
 // ===========================================
 
-function restoreCalendar(){
+function restoreCalendar() {
 
     updateCalendar();
 
@@ -129,10 +96,10 @@ function restoreCalendar(){
 
 
 // ===========================================
-// REFRESH
+// REFRESH DASHBOARD
 // ===========================================
 
-function refreshDashboard(){
+function refreshDashboard() {
 
     renderTasks();
 
@@ -152,19 +119,19 @@ function refreshDashboard(){
 // INITIALIZE ADVANCED FEATURES
 // ===========================================
 
-document.addEventListener(
+document.addEventListener("DOMContentLoaded", function () {
 
-"DOMContentLoaded",
+    // Calendar must already be initialized
+    if (calendar) {
 
-function(){
+        enableEventDrop();
 
-    enableEventDrop();
+        enableResize();
 
-    enableResize();
+        enableTooltip();
 
-    enableTooltip();
+    }
 
     updateReminderPanel();
 
 });
-
