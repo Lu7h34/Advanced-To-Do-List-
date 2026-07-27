@@ -1,88 +1,66 @@
-
 /* =====================================================
    PART 1C
    EDIT • PROGRESS • STATISTICS • TOAST
 =====================================================*/
 
-
 // ===========================================
 // EDIT TASK
 // ===========================================
 
-function editTask(id){
+function editTask(id) {
 
     const task = todoList.find(t => t.id === id);
 
-    if(!task) return;
+    if (!task) return;
 
     taskInput.value = task.title;
-
     taskDescription.value = task.description;
-
     taskDate.value = task.date;
-
     prioritySelect.value = task.priority;
-
     categorySelect.value = task.category;
 
     addButton.innerHTML =
-    '<i class="fa-solid fa-pen"></i> Update Task';
+        '<i class="fa-solid fa-pen"></i> Update Task';
 
-    addButton.onclick = function(){
-
+    addButton.onclick = function () {
         updateTask(id);
-
     };
 
 }
+
 
 
 // ===========================================
 // UPDATE TASK
 // ===========================================
 
-function updateTask(id){
+function updateTask(id) {
 
-    if(!validateTask()){
-
-        return;
-
-    }
+    if (!validateTask()) return;
 
     const task = todoList.find(t => t.id === id);
 
-    if(task){
+    if (!task) return;
 
-        task.title = taskInput.value.trim();
-
-        task.description = taskDescription.value.trim();
-
-        task.date = taskDate.value;
-
-        task.priority = prioritySelect.value;
-
-        task.category = categorySelect.value;
-
-        task.updated = new Date().toISOString();
-
-    }
+    task.title = taskInput.value.trim();
+    task.description = taskDescription.value.trim();
+    task.date = taskDate.value;
+    task.priority = prioritySelect.value;
+    task.category = categorySelect.value;
+    task.updated = new Date().toISOString();
 
     saveTasks();
 
     clearForm();
 
-    renderTasks();
-
-    updateStatistics();
-
-    updateProgress();
-
-    updateCalendar();
+    refreshDashboard();
 
     addButton.innerHTML =
-    '<i class="fa-solid fa-plus"></i> Add Task';
+        '<i class="fa-solid fa-plus"></i> Add Task';
 
     addButton.onclick = addTask;
+
+    addLog("Task Updated : " + task.title);
 
     showToast("Task Updated Successfully");
 
@@ -94,31 +72,23 @@ function updateTask(id){
 // PROGRESS BAR
 // ===========================================
 
-function updateProgress(){
+function updateProgress() {
 
     const total = todoList.length;
 
     const completed = todoList.filter(
-
-        t=>t.completed
-
+        task => task.completed
     ).length;
 
-    let percentage = 0;
+    const percentage = total
+        ? Math.round((completed / total) * 100)
+        : 0;
 
-    if(total>0){
+    if (!progressBar) return;
 
-        percentage = Math.round(
-
-            (completed/total)*100
-
-        );
-
-    }
-
-    progressBar.style.width = percentage+"%";
-
-    progressBar.innerHTML = percentage+"%";
+    progressBar.style.width = percentage + "%";
+    progressBar.innerHTML = percentage + "%";
+    progressBar.setAttribute("aria-valuenow", percentage);
 
 }
 
@@ -128,61 +98,46 @@ function updateProgress(){
 // STATISTICS
 // ===========================================
 
-function updateStatistics(){
+function updateStatistics() {
+
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
 
     const total = todoList.length;
 
     const completed = todoList.filter(
-
-        t=>t.completed
-
+        task => task.completed
     ).length;
 
-    const pending = total-completed;
+    const pending = total - completed;
 
-    const overdue = todoList.filter(t=>{
+    const overdue = todoList.filter(task => {
 
-        return (
+        if (task.completed) return false;
 
-            !t.completed &&
+        const due = new Date(task.date);
+        due.setHours(0, 0, 0, 0);
 
-            new Date(t.date)<new Date()
-
-        );
+        return due < today;
 
     }).length;
 
     const high = todoList.filter(
-
-        t=>t.priority==="High"
-
+        task => task.priority === "High"
     ).length;
 
-    totalTasks.innerHTML = total;
+    if (totalTasks) totalTasks.innerHTML = total;
+    if (pendingTasks) pendingTasks.innerHTML = pending;
+    if (completedTasks) completedTasks.innerHTML = completed;
+    if (overdueTasks) overdueTasks.innerHTML = overdue;
+    if (highPriority) highPriority.innerHTML = high;
 
-    pendingTasks.innerHTML = pending;
-
-    completedTasks.innerHTML = completed;
-
-    overdueTasks.innerHTML = overdue;
-
-    highPriority.innerHTML = high;
-
-    if(total===0){
-
-        completionRate.innerHTML="0%";
-
-    }
-
-    else{
+    if (completionRate) {
 
         completionRate.innerHTML =
-
-        Math.round(
-
-        completed/total*100
-
-        )+"%";
+            total === 0
+                ? "0%"
+                : Math.round((completed / total) * 100) + "%";
 
     }
 
@@ -191,40 +146,26 @@ function updateStatistics(){
 
 
 // ===========================================
-// RESET BUTTON
+// RESET DASHBOARD
 // ===========================================
 
-function resetDashboard(){
+function resetDashboard() {
 
-    if(
+    if (!confirm("Delete every task?")) return;
 
-        confirm(
+    todoList = [];
 
-        "Delete every task?"
+    saveTasks();
 
-        )
+    refreshDashboard();
 
-    ){
-
-        todoList=[];
-
-        saveTasks();
-
-        renderTasks();
-
-        updateStatistics();
-
-        updateProgress();
-
-        updateCalendar();
-
-        showToast(
-
-        "Dashboard Reset"
-
-        );
-
+    if (typeof updateReminderPanel === "function") {
+        updateReminderPanel();
     }
+
+    addLog("Dashboard Reset");
+
+    showToast("Dashboard Reset");
 
 }
 
@@ -234,29 +175,16 @@ function resetDashboard(){
 // TOAST
 // ===========================================
 
-function showToast(message){
+function showToast(message) {
 
-    const body = document.getElementById(
+    const body = document.getElementById("toastMessage");
+    const toastElement = document.getElementById("liveToast");
 
-        "toastMessage"
-
-    );
+    if (!body || !toastElement) return;
 
     body.innerHTML = message;
 
-    const toastElement = document.getElementById(
-
-        "liveToast"
-
-    );
-
-    const toast =
-
-    new bootstrap.Toast(
-
-        toastElement
-
-    );
+    const toast = new bootstrap.Toast(toastElement);
 
     toast.show();
 
@@ -268,23 +196,18 @@ function showToast(message){
 // ACTIVITY LOG
 // ===========================================
 
-function addLog(text){
+function addLog(text) {
 
-    const log = document.getElementById(
+    const log = document.getElementById("logList");
 
-        "logList"
+    if (!log) return;
 
-    );
+    const li = document.createElement("li");
 
-    if(!log) return;
-
-    const li=document.createElement("li");
-
-    li.innerHTML=
-
-    new Date().toLocaleString()
-
-    +"<br>"+text;
+    li.innerHTML =
+        new Date().toLocaleString() +
+        "<br>" +
+        text;
 
     log.prepend(li);
 
@@ -293,16 +216,12 @@ function addLog(text){
 
 
 // ===========================================
-// SAVE EVENT
+// SAVE BEFORE EXIT
 // ===========================================
 
-window.addEventListener(
+window.addEventListener("beforeunload", function () {
 
-"beforeunload",
-
-function(){
-
-saveTasks();
+    saveTasks();
 
 });
 
@@ -312,21 +231,10 @@ saveTasks();
 // INITIALIZE
 // ===========================================
 
-document.addEventListener(
+document.addEventListener("DOMContentLoaded", function () {
 
-"DOMContentLoaded",
+    loadTasks();
 
-function(){
-
-loadTasks();
-
-renderTasks();
-
-updateStatistics();
-
-updateProgress();
-
-updateCalendar();
+    refreshDashboard();
 
 });
-
