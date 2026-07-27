@@ -1,66 +1,59 @@
 /* =====================================================
-   PART 3A
-   FULL CALENDAR
+   CALENDAR.JS
+   FullCalendar Module
 =====================================================*/
 
+let calendar = null;
 
 // ==========================================
 // INITIALIZE CALENDAR
 // ==========================================
 
-function initializeCalendar(){
+function initializeCalendar() {
 
-    const calendarElement =
+    const calendarElement = document.getElementById("calendar");
 
-    document.getElementById("calendar");
-
-    if(!calendarElement){
-
+    if (!calendarElement) {
         return;
-
     }
 
-    calendar = new FullCalendar.Calendar(
+    calendar = new FullCalendar.Calendar(calendarElement, {
 
-        calendarElement,
+        initialView: "dayGridMonth",
 
-        {
+        selectable: true,
 
-            initialView:"dayGridMonth",
+        editable: true,
 
-            selectable:true,
+        height: "auto",
 
-            editable:true,
+        headerToolbar: {
+            left: "prev,next today",
+            center: "title",
+            right: "dayGridMonth,timeGridWeek,timeGridDay"
+        },
 
-            height:"auto",
+        eventClick: function (info) {
+            openTask(info.event.id);
+        },
 
-            headerToolbar:{
+        dateClick: function (info) {
 
-                left:"prev,next today",
-
-                center:"title",
-
-                right:"dayGridMonth,timeGridWeek,timeGridDay"
-
-            },
-
-            eventClick:function(info){
-
-                openTask(info.event.id);
-
-            },
-
-            dateClick:function(info){
-
+            if (typeof taskDate !== "undefined") {
                 taskDate.value = info.dateStr;
+            }
 
+            if (typeof taskInput !== "undefined") {
                 taskInput.focus();
-
             }
 
         }
 
-    );
+    });
+
+    enableEventDrop();
+    enableResize();
+    enableTooltip();
 
     calendar.render();
 
@@ -68,39 +61,33 @@ function initializeCalendar(){
 
 }
 
-
-
 // ==========================================
 // UPDATE CALENDAR EVENTS
 // ==========================================
 
-function updateCalendar(){
+function updateCalendar() {
 
-    if(!calendar){
-
-        return;
-
-    }
+    if (!calendar) return;
 
     calendar.removeAllEvents();
 
-    todoList.forEach(task=>{
+    todoList.forEach(task => {
 
         calendar.addEvent({
 
-            id:task.id,
+            id: task.id,
 
-            title:task.title,
+            title: task.title,
 
-            start:task.date,
+            start: task.date,
 
-            allDay:true,
+            allDay: true,
 
-            backgroundColor:getTaskColor(task),
+            backgroundColor: getTaskColor(task),
 
-            borderColor:getTaskColor(task),
+            borderColor: getTaskColor(task),
 
-            textColor:"#ffffff"
+            textColor: "#ffffff"
 
         });
 
@@ -108,125 +95,70 @@ function updateCalendar(){
 
 }
 
-
-
 // ==========================================
 // EVENT COLOR
 // ==========================================
 
-function getTaskColor(task){
+function getTaskColor(task) {
 
-    if(task.completed){
-
+    if (task.completed) {
         return "#198754";
-
     }
 
-    switch(task.priority){
+    switch (task.priority) {
 
         case "High":
-
             return "#dc3545";
 
         case "Medium":
-
             return "#ffc107";
 
         case "Low":
-
             return "#0d6efd";
 
         default:
-
             return "#6c757d";
 
     }
 
 }
 
-
-
 // ==========================================
-// OPEN TASK FROM CALENDAR
+// OPEN TASK
 // ==========================================
 
-function openTask(id){
+function openTask(id) {
 
-    const task = todoList.find(
+    const task = todoList.find(t => t.id == id);
 
-        t=>t.id===id
+    if (!task) return;
 
-    );
+    const details = document.getElementById("taskDetails");
 
-    if(!task){
-
-        return;
-
-    }
-
-    const details =
-
-    document.getElementById("taskDetails");
-
-    if(details){
+    if (details) {
 
         details.innerHTML = `
 
-        <h4>${task.title}</h4>
+            <h4>${task.title}</h4>
+            <hr>
 
-        <hr>
+            <p><strong>Description:</strong> ${task.description}</p>
 
-        <p>
+            <p><strong>Date:</strong> ${task.date}</p>
 
-        <strong>Description:</strong>
+            <p><strong>Priority:</strong> ${task.priority}</p>
 
-        ${task.description}
+            <p><strong>Category:</strong> ${task.category}</p>
 
-        </p>
-
-        <p>
-
-        <strong>Date:</strong>
-
-        ${task.date}
-
-        </p>
-
-        <p>
-
-        <strong>Priority:</strong>
-
-        ${task.priority}
-
-        </p>
-
-        <p>
-
-        <strong>Category:</strong>
-
-        ${task.category}
-
-        </p>
-
-        <p>
-
-        <strong>Status:</strong>
-
-        ${task.completed ?
-
-        "Completed" :
-
-        "Pending"}
-
-        </p>
+            <p><strong>Status:</strong>
+                ${task.completed ? "Completed" : "Pending"}
+            </p>
 
         `;
 
     }
 
-    const modal =
-
-    new bootstrap.Modal(
+    const modal = new bootstrap.Modal(
 
         document.getElementById("taskModal")
 
@@ -236,151 +168,61 @@ function openTask(id){
 
 }
 
-
-
 // ==========================================
-// TODAY BUTTON
+// CALENDAR NAVIGATION
 // ==========================================
 
-const todayBtn =
+function nextMonth() {
 
-document.getElementById("todayBtn");
-
-if(todayBtn){
-
-todayBtn.addEventListener(
-
-"click",
-
-function(){
-
-if(calendar){
-
-calendar.today();
+    if (calendar) {
+        calendar.next();
+    }
 
 }
 
-});
+function previousMonth() {
+
+    if (calendar) {
+        calendar.prev();
+    }
 
 }
 
+function gotoDate(date) {
 
-
-// ==========================================
-// NEXT MONTH
-// ==========================================
-
-function nextMonth(){
-
-if(calendar){
-
-calendar.next();
+    if (calendar) {
+        calendar.gotoDate(date);
+    }
 
 }
 
-}
+function refreshCalendar() {
 
-
-
-// ==========================================
-// PREVIOUS MONTH
-// ==========================================
-
-function previousMonth(){
-
-if(calendar){
-
-calendar.prev();
+    updateCalendar();
 
 }
 
-}
-
-
-
 // ==========================================
-// GO TO DATE
+// DRAG & DROP
 // ==========================================
 
-function gotoDate(date){
+function enableEventDrop() {
 
-if(calendar){
+    if (!calendar) return;
 
-calendar.gotoDate(date);
+    calendar.setOption("eventDrop", function (info) {
 
-}
+        const task = todoList.find(
 
-}
-
-
-
-// ==========================================
-// REFRESH CALENDAR
-// ==========================================
-
-function refreshCalendar(){
-
-updateCalendar();
-
-}
-
-
-
-// ==========================================
-// INITIALIZE AFTER PAGE LOAD
-// ==========================================
-
-document.addEventListener(
-
-"DOMContentLoaded",
-
-function(){
-
-initializeCalendar();
-
-});
-
-/* =====================================================
-   PART 3B
-   ADVANCED CALENDAR FEATURES
-=====================================================*/
-
-
-// ===========================================
-// ENABLE DRAG & DROP
-// ===========================================
-
-if(calendar){
-
-    calendar.setOption("editable",true);
-
-}
-
-
-
-// ===========================================
-// EVENT DROP
-// ===========================================
-
-function enableEventDrop(){
-
-    if(!calendar) return;
-
-    calendar.setOption("eventDrop",function(info){
-
-        const task=todoList.find(
-
-            t=>t.id===info.event.id
+            t => t.id == info.event.id
 
         );
 
-        if(task){
+        if (!task) return;
 
-            task.date=info.event.startStr;
+        task.date = info.event.startStr;
 
-            task.updated=new Date().toISOString();
-
-        }
+        task.updated = new Date().toISOString();
 
         saveTasks();
 
@@ -390,37 +232,37 @@ function enableEventDrop(){
 
         updateProgress();
 
+        updateCalendar();
+
+        if (typeof updateReminderPanel === "function") {
+            updateReminderPanel();
+        }
+
         showToast("Task Date Updated");
 
     });
 
 }
 
-
-
-// ===========================================
+// ==========================================
 // EVENT RESIZE
-// ===========================================
+// ==========================================
 
-function enableResize(){
+function enableResize() {
 
-    if(!calendar) return;
+    if (!calendar) return;
 
-    calendar.setOption("eventResize",function(info){
+    calendar.setOption("eventResize", function (info) {
 
-        const task=todoList.find(
+        const task = todoList.find(
 
-            t=>t.id===info.event.id
+            t => t.id == info.event.id
 
         );
 
-        if(task){
+        if (!task) return;
 
-            task.date=info.event.endStr ||
-
-                      info.event.startStr;
-
-        }
+        task.date = info.event.endStr || info.event.startStr;
 
         saveTasks();
 
@@ -428,275 +270,134 @@ function enableResize(){
 
         updateCalendar();
 
+        if (typeof updateReminderPanel === "function") {
+            updateReminderPanel();
+        }
+
     });
 
 }
 
-
-
-// ===========================================
+// ==========================================
 // TOOLTIP
-// ===========================================
+// ==========================================
 
-function enableTooltip(){
+function enableTooltip() {
 
-    if(!calendar) return;
+    if (!calendar) return;
 
-    calendar.setOption("eventDidMount",function(info){
+    calendar.setOption("eventDidMount", function (info) {
 
-        const task=todoList.find(
+        const task = todoList.find(
 
-            t=>t.id===info.event.id
-
-        );
-
-        if(!task) return;
-
-        info.el.title=
-
-        "Task : "+task.title+
-
-        "\nPriority : "+task.priority+
-
-        "\nCategory : "+task.category+
-
-        "\nStatus : "+(
-
-            task.completed?
-
-            "Completed":
-
-            "Pending"
+            t => t.id == info.event.id
 
         );
+
+        if (!task) return;
+
+        info.el.title =
+
+            "Task : " + task.title +
+
+            "\nPriority : " + task.priority +
+
+            "\nCategory : " + task.category +
+
+            "\nStatus : " +
+
+            (task.completed ? "Completed" : "Pending");
 
     });
 
 }
 
+// ==========================================
+// CALENDAR SEARCH
+// ==========================================
 
+function searchCalendar(keyword) {
 
-// ===========================================
-// TODAY'S TASKS
-// ===========================================
+    if (!calendar) return;
 
-function highlightTodayTasks(){
+    if (!keyword || keyword.trim() === "") {
 
-    const today=new Date()
-
-    .toISOString()
-
-    .split("T")[0];
-
-    return todoList.filter(
-
-        task=>task.date===today
-
-    );
-
-}
-
-
-
-// ===========================================
-// UPCOMING TASKS
-// ===========================================
-
-function getUpcomingTasks(days=7){
-
-    const today=new Date();
-
-    const future=new Date();
-
-    future.setDate(
-
-        future.getDate()+days
-
-    );
-
-    return todoList.filter(task=>{
-
-        const d=new Date(task.date);
-
-        return(
-
-            d>=today &&
-
-            d<=future
-
-        );
-
-    });
-
-}
-
-
-
-// ===========================================
-// REMINDER PANEL
-// ===========================================
-
-function updateReminderPanel(){
-
-    const reminder=
-
-    document.getElementById(
-
-        "reminderList"
-
-    );
-
-    if(!reminder) return;
-
-    reminder.innerHTML="";
-
-    const upcoming=
-
-    getUpcomingTasks();
-
-    if(upcoming.length===0){
-
-        reminder.innerHTML=
-
-        "<li class='list-group-item'>No upcoming tasks</li>";
+        updateCalendar();
 
         return;
 
     }
 
-    upcoming.forEach(task=>{
-
-        const li=
-
-        document.createElement("li");
-
-        li.className=
-
-        "list-group-item";
-
-        li.innerHTML=`
-
-        <strong>${task.title}</strong>
-
-        <br>
-
-        Due :
-
-        ${task.date}
-
-        <br>
-
-        Priority :
-
-        ${task.priority}
-
-        `;
-
-        reminder.appendChild(li);
-
-    });
-
-}
-
-
-
-// ===========================================
-// CALENDAR SEARCH
-// ===========================================
-
-function searchCalendar(keyword){
-
-    if(!calendar) return;
-
     calendar.removeAllEvents();
 
     todoList
 
-    .filter(task=>{
+        .filter(task =>
 
-        return task.title
+            task.title
 
-        .toLowerCase()
+                .toLowerCase()
 
-        .includes(
+                .includes(keyword.toLowerCase())
 
-            keyword.toLowerCase()
+        )
 
-        );
+        .forEach(task => {
 
-    })
+            calendar.addEvent({
 
-    .forEach(task=>{
+                id: task.id,
 
-        calendar.addEvent({
+                title: task.title,
 
-            id:task.id,
+                start: task.date,
 
-            title:task.title,
+                allDay: true,
 
-            start:task.date,
+                backgroundColor: getTaskColor(task),
 
-            backgroundColor:
+                borderColor: getTaskColor(task),
 
-            getTaskColor(task)
+                textColor: "#ffffff"
+
+            });
 
         });
 
-    });
-
 }
 
-
-
-// ===========================================
+// ==========================================
 // RESTORE CALENDAR
-// ===========================================
+// ==========================================
 
-function restoreCalendar(){
+function restoreCalendar() {
 
     updateCalendar();
 
 }
 
+// ==========================================
+// TODAY BUTTON
+// ==========================================
 
+document.addEventListener("DOMContentLoaded", function () {
 
-// ===========================================
-// REFRESH
-// ===========================================
+    const todayBtn = document.getElementById("todayBtn");
 
-function refreshDashboard(){
+    if (todayBtn) {
 
-    renderTasks();
+        todayBtn.addEventListener("click", function () {
 
-    updateStatistics();
+            if (calendar) {
 
-    updateProgress();
+                calendar.today();
 
-    updateCalendar();
+            }
 
-    updateReminderPanel();
+        });
 
-}
+    }
 
-
-
-// ===========================================
-// INITIALIZE ADVANCED FEATURES
-// ===========================================
-
-document.addEventListener(
-
-"DOMContentLoaded",
-
-function(){
-
-    enableEventDrop();
-
-    enableResize();
-
-    enableTooltip();
-
-    updateReminderPanel();
+    initializeCalendar();
 
 });
-
