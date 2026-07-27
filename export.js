@@ -1,181 +1,78 @@
+function exportExcel() {
 
-/* =====================================================
-   PART 5A
-   EXPORT / IMPORT
-=====================================================*/
-
-
-// ====================================
-// EXPORT TO EXCEL
-// ====================================
-
-function exportExcel(){
-
-    const data = todoList.map(task=>({
-
-        Title:task.title,
-
-        Description:task.description,
-
-        Date:task.date,
-
-        Priority:task.priority,
-
-        Category:task.category,
-
-        Status:task.completed ?
-
-        "Completed":"Pending"
-
+    const data = todoList.map(task => ({
+        Title: task.title,
+        Description: task.description,
+        Date: task.date,
+        Priority: task.priority,
+        Category: task.category,
+        Status: task.completed ? "Completed" : "Pending"
     }));
 
     const ws = XLSX.utils.json_to_sheet(data);
-
     const wb = XLSX.utils.book_new();
 
-    XLSX.utils.book_append_sheet(
+    XLSX.utils.book_append_sheet(wb, ws, "Tasks");
 
-        wb,
-
-        ws,
-
-        "Tasks"
-
-    );
-
-    XLSX.writeFile(
-
-        wb,
-
-        "TodoDashboard.xlsx"
-
-    );
+    XLSX.writeFile(wb, "TodoDashboard.xlsx");
 
 }
 
+function exportPDF() {
 
+    const { jsPDF } = window.jspdf;
 
-// ====================================
-// EXPORT PDF
-// ====================================
-
-function exportPDF(){
-
-    const {jsPDF}=window.jspdf;
-
-    const doc=new jsPDF();
+    const doc = new jsPDF();
 
     doc.setFontSize(18);
 
-    doc.text(
+    doc.text("Todo Dashboard Report", 14, 20);
 
-        "Todo Dashboard Report",
+    const rows = todoList.map(task => [
 
-        14,
+        task.title,
 
-        20
+        task.date,
 
-    );
+        task.priority,
 
-    const rows=[];
+        task.category,
 
-    todoList.forEach(task=>{
+        task.completed ? "Completed" : "Pending"
 
-        rows.push([
-
-            task.title,
-
-            task.date,
-
-            task.priority,
-
-            task.category,
-
-            task.completed?
-
-            "Completed":
-
-            "Pending"
-
-        ]);
-
-    });
+    ]);
 
     doc.autoTable({
 
-        head:[[
+        head: [["Task", "Date", "Priority", "Category", "Status"]],
 
-            "Task",
+        body: rows,
 
-            "Date",
-
-            "Priority",
-
-            "Category",
-
-            "Status"
-
-        ]],
-
-        body:rows,
-
-        startY:30
+        startY: 30
 
     });
 
-    doc.save(
-
-        "TodoDashboard.pdf"
-
-    );
+    doc.save("TodoDashboard.pdf");
 
 }
 
+function backupJSON() {
 
+    const blob = new Blob(
 
-// ====================================
-// BACKUP JSON
-// ====================================
+        [JSON.stringify(todoList, null, 2)],
 
-function backupJSON(){
-
-    const data=
-
-    JSON.stringify(
-
-        todoList,
-
-        null,
-
-        2
+        { type: "application/json" }
 
     );
 
-    const blob=
+    const url = URL.createObjectURL(blob);
 
-    new Blob(
+    const a = document.createElement("a");
 
-        [data],
+    a.href = url;
 
-        {
-
-            type:"application/json"
-
-        }
-
-    );
-
-    const url=
-
-    URL.createObjectURL(blob);
-
-    const a=
-
-    document.createElement("a");
-
-    a.href=url;
-
-    a.download="TodoBackup.json";
+    a.download = "TodoBackup.json";
 
     a.click();
 
@@ -183,300 +80,15 @@ function backupJSON(){
 
 }
 
+function importFile(event) {
 
+    const file = event.target.files[0];
 
-// ====================================
-// IMPORT FILE
-// ====================================
+    if (!file) return;
 
-document
+    const ext = file.name.split(".").pop().toLowerCase();
 
-.getElementById("importFile")
-
-.addEventListener(
-
-"change",
-
-importFile
-
-);
-
-
-
-function importFile(e){
-
-    const file=e.target.files[0];
-
-    if(!file) return;
-
-    const extension=
-
-    file.name
-
-    .split(".")
-
-    .pop()
-
-    .toLowerCase();
-
-    if(extension==="json"){
-
-        importJSON(file);
-
-    }
-
-    else{
-
-        alert(
-
-        "Excel import will be added in Part 5B"
-
-        );
-
-    }
-
-}
-
-
-
-// ====================================
-// IMPORT JSON
-// ====================================
-
-function importJSON(file){
-
-    const reader=
-
-    new FileReader();
-
-    reader.onload=function(e){
-
-        try{
-
-            todoList=
-
-            JSON.parse(
-
-                e.target.result
-
-            );
-
-            saveTasks();
-
-            refreshDashboard();
-
-            updateAllCharts();
-
-            showToast(
-
-            "Backup Imported"
-
-            );
-
-        }
-
-        catch{
-
-            alert(
-
-            "Invalid JSON File"
-
-            );
-
-        }
-
-    };
-
-    reader.readAsText(file);
-
-}
-
-/* =====================================================
-   PART 5B
-   IMPORT EXCEL / CSV
-   RECYCLE BIN
-=====================================================*/
-
-let deletedTasks = [];
-
-
-// =====================================
-// IMPORT EXCEL
-// =====================================
-
-function importExcel(file){
-
-    const reader = new FileReader();
-
-    reader.onload = function(e){
-
-        const data = new Uint8Array(e.target.result);
-
-        const workbook = XLSX.read(data,{
-
-            type:"array"
-
-        });
-
-        const sheet = workbook.Sheets[
-            workbook.SheetNames[0]
-        ];
-
-        const rows = XLSX.utils.sheet_to_json(sheet);
-
-        rows.forEach(row=>{
-
-            const task={
-
-                id:generateID(),
-
-                title:row.Title || row.Task || "",
-
-                description:row.Description || "",
-
-                date:row.Date || "",
-
-                priority:row.Priority || "Medium",
-
-                category:row.Category || "Work",
-
-                completed:
-
-                row.Status==="Completed",
-
-                created:new Date().toISOString(),
-
-                updated:new Date().toISOString()
-
-            };
-
-            addImportedTask(task);
-
-        });
-
-        saveTasks();
-
-        refreshDashboard();
-
-        updateAllCharts();
-
-        showToast("Excel Imported");
-
-    };
-
-    reader.readAsArrayBuffer(file);
-
-}
-
-
-
-// =====================================
-// IMPORT CSV
-// =====================================
-
-function importCSV(file){
-
-    const reader = new FileReader();
-
-    reader.onload=function(e){
-
-        const lines=e.target.result.split("\n");
-
-        lines.shift();
-
-        lines.forEach(line=>{
-
-            if(line.trim()==="") return;
-
-            const col=line.split(",");
-
-            const task={
-
-                id:generateID(),
-
-                title:col[0],
-
-                description:col[1],
-
-                date:col[2],
-
-                priority:col[3],
-
-                category:col[4],
-
-                completed:
-
-                col[5]==="Completed",
-
-                created:new Date().toISOString(),
-
-                updated:new Date().toISOString()
-
-            };
-
-            addImportedTask(task);
-
-        });
-
-        saveTasks();
-
-        refreshDashboard();
-
-        updateAllCharts();
-
-    };
-
-    reader.readAsText(file);
-
-}
-
-
-
-// =====================================
-// DUPLICATE CHECK
-// =====================================
-
-function addImportedTask(task){
-
-    const duplicate=
-
-    todoList.find(t=>
-
-        t.title===task.title &&
-
-        t.date===task.date
-
-    );
-
-    if(!duplicate){
-
-        todoList.push(task);
-
-    }
-
-}
-
-
-
-// =====================================
-// UPDATE IMPORT
-// =====================================
-
-function importFile(e){
-
-    const file=e.target.files[0];
-
-    if(!file) return;
-
-    const ext=file.name
-
-    .split(".")
-
-    .pop()
-
-    .toLowerCase();
-
-    switch(ext){
+    switch (ext) {
 
         case "json":
 
@@ -506,31 +118,169 @@ function importFile(e){
 
 }
 
+function importJSON(file) {
 
+    const reader = new FileReader();
 
-// =====================================
-// DELETE TASK
-// =====================================
+    reader.onload = function (e) {
 
-function deleteTask(id){
+        try {
 
-    const index=
+            todoList = JSON.parse(e.target.result);
 
-    todoList.findIndex(
+            saveTasks();
 
-        t=>t.id===id
+            refreshDashboard();
+
+            showToast("JSON Imported");
+
+        }
+
+        catch {
+
+            alert("Invalid JSON");
+
+        }
+
+    };
+
+    reader.readAsText(file);
+
+}
+
+function importExcel(file) {
+
+    const reader = new FileReader();
+
+    reader.onload = function (e) {
+
+        const workbook = XLSX.read(e.target.result, {
+
+            type: "array"
+
+        });
+
+        const sheet = workbook.Sheets[workbook.SheetNames[0]];
+
+        const rows = XLSX.utils.sheet_to_json(sheet);
+
+        rows.forEach(row => {
+
+            addImportedTask({
+
+                id: generateID(),
+
+                title: row.Title || "",
+
+                description: row.Description || "",
+
+                date: row.Date || "",
+
+                priority: row.Priority || "Medium",
+
+                category: row.Category || "General",
+
+                completed: row.Status === "Completed",
+
+                created: new Date().toISOString(),
+
+                updated: new Date().toISOString()
+
+            });
+
+        });
+
+        saveTasks();
+
+        refreshDashboard();
+
+    };
+
+    reader.readAsArrayBuffer(file);
+
+}
+
+function importCSV(file) {
+
+    const reader = new FileReader();
+
+    reader.onload = function (e) {
+
+        const rows = e.target.result.trim().split("\n");
+
+        rows.shift();
+
+        rows.forEach(line => {
+
+            const col = line.split(",");
+
+            if (col.length < 6) return;
+
+            addImportedTask({
+
+                id: generateID(),
+
+                title: col[0],
+
+                description: col[1],
+
+                date: col[2],
+
+                priority: col[3],
+
+                category: col[4],
+
+                completed: col[5] === "Completed",
+
+                created: new Date().toISOString(),
+
+                updated: new Date().toISOString()
+
+            });
+
+        });
+
+        saveTasks();
+
+        refreshDashboard();
+
+    };
+
+    reader.readAsText(file);
+
+}
+
+function addImportedTask(task) {
+
+    const duplicate = todoList.find(t =>
+
+        t.title === task.title &&
+
+        t.date === task.date
 
     );
 
-    if(index<0) return;
+    if (!duplicate) {
 
-    deletedTasks.push(
+        todoList.push(task);
 
-        todoList[index]
+    }
+
+}
+
+function deleteTask(id) {
+
+    const index = todoList.findIndex(
+
+        task => task.id === id
 
     );
 
-    todoList.splice(index,1);
+    if (index === -1) return;
+
+    deletedTasks.push(todoList[index]);
+
+    todoList.splice(index, 1);
 
     saveTasks();
 
@@ -538,31 +288,17 @@ function deleteTask(id){
 
 }
 
+function restoreLastDeleted() {
 
+    if (deletedTasks.length === 0) {
 
-// =====================================
-// RESTORE LAST
-// =====================================
-
-function restoreLastDeleted(){
-
-    if(deletedTasks.length===0){
-
-        alert(
-
-        "Recycle Bin Empty"
-
-        );
+        alert("Recycle Bin Empty");
 
         return;
 
     }
 
-    const task=
-
-    deletedTasks.pop();
-
-    todoList.push(task);
+    todoList.push(deletedTasks.pop());
 
     saveTasks();
 
@@ -570,161 +306,101 @@ function restoreLastDeleted(){
 
 }
 
+function emptyRecycleBin() {
 
+    if (confirm("Empty Recycle Bin?")) {
 
-// =====================================
-// EMPTY BIN
-// =====================================
-
-function emptyRecycleBin(){
-
-    if(
-
-        confirm(
-
-        "Delete Recycle Bin?"
-
-        )
-
-    ){
-
-        deletedTasks=[];
+        deletedTasks = [];
 
     }
 
 }
 
+setInterval(() => {
 
+    localStorage.setItem(
 
-// =====================================
-// DRAG & DROP
-// =====================================
+        "todoBackup",
 
-const dropArea=
+        JSON.stringify(todoList)
 
-document.getElementById(
+    );
 
-"dropZone"
+}, 60000);
 
-);
+function restoreBackup() {
 
-if(dropArea){
+    const backup = localStorage.getItem("todoBackup");
 
-dropArea.addEventListener(
+    if (!backup) return;
 
-"dragover",
+    todoList = JSON.parse(backup);
 
-function(e){
+    saveTasks();
 
-e.preventDefault();
+    refreshDashboard();
 
-dropArea.classList.add(
+}
 
-"border-primary"
+document.addEventListener("DOMContentLoaded", () => {
 
-);
+    const importFileInput = document.getElementById("importFile");
+
+    if (importFileInput) {
+
+        importFileInput.addEventListener(
+
+            "change",
+
+            importFile
+
+        );
+
+    }
 
 });
 
-dropArea.addEventListener(
+document.addEventListener("DOMContentLoaded", () => {
 
-"dragleave",
+    const dropZone = document.getElementById("dropZone");
 
-function(){
+    if (!dropZone) return;
 
-dropArea.classList.remove(
+    dropZone.addEventListener("dragover", e => {
 
-"border-primary"
+        e.preventDefault();
 
-);
+        dropZone.classList.add("border-primary");
 
-});
+    });
 
-dropArea.addEventListener(
+    dropZone.addEventListener("dragleave", () => {
 
-"drop",
+        dropZone.classList.remove("border-primary");
 
-function(e){
+    });
 
-e.preventDefault();
+    dropZone.addEventListener("drop", e => {
 
-dropArea.classList.remove(
+        e.preventDefault();
 
-"border-primary"
+        dropZone.classList.remove("border-primary");
 
-);
+        if (e.dataTransfer.files.length) {
 
-const file=
+            importFile({
 
-e.dataTransfer.files[0];
+                target: {
 
-if(file){
+                    files: e.dataTransfer.files
 
-importFile({
+                }
 
-target:{
+            });
 
-files:[file]
+        }
 
-}
-
-});
-
-}
+    });
 
 });
-
-}
-
-
-
-// =====================================
-// AUTO BACKUP
-// =====================================
-
-setInterval(function(){
-
-localStorage.setItem(
-
-"todoBackup",
-
-JSON.stringify(todoList)
-
-);
-
-},60000);
-
-
-
-// =====================================
-// RESTORE AUTO BACKUP
-// =====================================
-
-function restoreBackup(){
-
-const data=
-
-localStorage.getItem(
-
-"todoBackup"
-
-);
-
-if(data){
-
-todoList=
-
-JSON.parse(data);
-
-refreshDashboard();
-
-showToast(
-
-"Backup Restored"
-
-);
-
-}
-
-}
 
