@@ -1,40 +1,47 @@
-
 /* =====================================================
-   PART 6A
-   DARK MODE + REMINDERS + SHORTCUTS
+   DARKMODE.JS
+   Theme Management Module
 =====================================================*/
 
-// ======================================
-// DARK MODE
-// ======================================
+// ==========================================
+// ENABLE DARK MODE
+// ==========================================
 
-const darkModeBtn = document.getElementById("darkModeBtn");
-
-function enableDarkMode(){
+function enableDarkMode() {
 
     document.body.classList.add("dark-mode");
 
-    localStorage.setItem("theme","dark");
+    localStorage.setItem("theme", "dark");
+
+    updateDarkModeButton();
 
 }
 
-function disableDarkMode(){
+// ==========================================
+// DISABLE DARK MODE
+// ==========================================
+
+function disableDarkMode() {
 
     document.body.classList.remove("dark-mode");
 
-    localStorage.setItem("theme","light");
+    localStorage.setItem("theme", "light");
+
+    updateDarkModeButton();
 
 }
 
-function toggleDarkMode(){
+// ==========================================
+// TOGGLE DARK MODE
+// ==========================================
 
-    if(document.body.classList.contains("dark-mode")){
+function toggleDarkMode() {
+
+    if (document.body.classList.contains("dark-mode")) {
 
         disableDarkMode();
 
-    }
-
-    else{
+    } else {
 
         enableDarkMode();
 
@@ -42,23 +49,68 @@ function toggleDarkMode(){
 
 }
 
-if(darkModeBtn){
+// ==========================================
+// UPDATE BUTTON ICON/TEXT
+// ==========================================
 
-    darkModeBtn.addEventListener(
+function updateDarkModeButton() {
 
-        "click",
+    const darkModeBtn = document.getElementById("darkModeBtn");
 
-        toggleDarkMode
+    if (!darkModeBtn) return;
 
-    );
+    if (document.body.classList.contains("dark-mode")) {
+
+        darkModeBtn.innerHTML = "☀️ Light Mode";
+
+    } else {
+
+        darkModeBtn.innerHTML = "🌙 Dark Mode";
+
+    }
 
 }
 
-if(localStorage.getItem("theme")==="dark"){
+// ==========================================
+// LOAD SAVED THEME
+// ==========================================
 
-    enableDarkMode();
+function loadTheme() {
+
+    const savedTheme = localStorage.getItem("theme");
+
+    if (savedTheme === "dark") {
+
+        enableDarkMode();
+
+    } else {
+
+        disableDarkMode();
+
+    }
 
 }
 
+// ==========================================
+// INITIALIZE DARK MODE
+// ==========================================
 
+document.addEventListener("DOMContentLoaded", function () {
 
+    loadTheme();
+
+    const darkModeBtn = document.getElementById("darkModeBtn");
+
+    if (darkModeBtn) {
+
+        darkModeBtn.addEventListener(
+
+            "click",
+
+            toggleDarkMode
+
+        );
+
+    }
+
+});
